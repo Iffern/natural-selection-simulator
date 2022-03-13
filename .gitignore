@@ -1,0 +1,22 @@
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### VS Code ###
+.vscode/
+
+#Nuget packages folder
+packages/
+venv/
+constants.py
+__pycache__/
+*.py[cod]
+*$py.class
+
+#######
+.idea
