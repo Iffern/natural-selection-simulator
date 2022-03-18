@@ -38,7 +38,3 @@ class Point:
         x = random.randint(point_lower_left.x, point_upper_right.x)
         y = random.randint(point_lower_left.y, point_upper_right.y)
         return Point(x, y)
-
-
-
-
