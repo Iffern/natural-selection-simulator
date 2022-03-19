@@ -1,4 +1,5 @@
-import random
+from utils import math_utils
+from config import COLOR, TAIL
 
 
 class Attributes:
@@ -15,8 +16,6 @@ class Attributes:
 
     @staticmethod
     def get_random_attributes():
-        color = round(random.uniform(0, 100), 2)
-        tail = round(random.uniform(0, 100), 2)
+        color = math_utils.get_gauss_in_range(COLOR['min'], COLOR['max'])
+        tail = math_utils.get_gauss_in_range(TAIL['min'], TAIL['max'])
         return Attributes(color, tail)
-
-

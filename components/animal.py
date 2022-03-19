@@ -20,6 +20,3 @@ class Animal:
         # return Animal(gender=Gender.random(), position=Point.get_child_position(self.position),
         #               attributes=Attributes.get_child_attributes(self, partner), age=0, energy=100.0)
         pass
-
-
-
