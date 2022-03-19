@@ -6,7 +6,7 @@ from pygame_widgets.textbox import TextBox
 class SideBar:
 
     def __init__(self, x, y):
-        self.X = x
+        self.X = x + 10
         self.Y = y
         self.items = {}
         self.font = pygame.font.SysFont('georgia', 12)
