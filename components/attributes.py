@@ -19,3 +19,6 @@ class Attributes:
         color = math_utils.get_gauss_in_range(COLOR['min'], COLOR['max'])
         tail = math_utils.get_gauss_in_range(TAIL['min'], TAIL['max'])
         return Attributes(color, tail)
+
+    def probability_of_breeding(self):
+        return (self.color + self.tail)/(COLOR['max'] + TAIL['max'])
