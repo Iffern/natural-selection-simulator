@@ -1,12 +1,11 @@
+from random import random
+
 from components.gender import Gender, opposite
-from config import ENERGY, MAP_HEIGHT, MAP_WIDTH, PLANT_ENERGY
+from config import ENERGY, MAP_HEIGHT, MAP_WIDTH, PLANT_ENERGY, NEIGHBOUR_TILES
 from components.animal import Animal
 from components.attributes import Attributes
 from components.plant import Plant
 from components.point import Point
-
-NEIGHBOUR_TILES = [Point(0, 1), Point(1, 1), Point(1, 0), Point(1, -1), Point(0, -1), Point(-1, -1), Point(-1, 0),
-                   Point(-1, 1)]
 
 
 def filter_capable_to_breed(partners: []):
@@ -102,8 +101,14 @@ class Map:
         return partners
 
     def breed_animals(self, first_animal: Animal, sec_animal: Animal):
-        # TODO - implement
-        pass
+        female = first_animal if first_animal.gender is Gender.F else sec_animal
+        male = first_animal if first_animal.gender is Gender.M else sec_animal
+        random_num = random()
+        if random_num <= male.probability_of_breeding():
+            child = female.create_child(male, self.tiles)
+            if child.position is not female.position:
+                self.tiles[child.position] = child
+                self.animals.append(child)
 
     def find_partners_further(self, animal: Animal):
         # TODO - implement

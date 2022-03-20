@@ -35,8 +35,6 @@ class Animal:
     def probability_of_breeding(self):
         return self.attributes.probability_of_breeding()
 
-    def create_child(self, partner):
-        # TODO
-        # return Animal(gender=Gender.random(), position=Point.get_child_position(self.position),
-        #               attributes=Attributes.get_child_attributes(self, partner), age=0, energy=100.0)
-        pass
+    def create_child(self, partner, tiles: []):
+        return Animal(gender=Gender.random(), position=Point.get_child_position(self.position, tiles),
+                      attributes=Attributes.get_child_attributes(self, partner), age=0, energy=4*ENERGY_DEMAND_PER_ROUND)

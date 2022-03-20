@@ -1,3 +1,5 @@
+from components.point import Point
+
 MAP_WIDTH = 100
 MAP_HEIGHT = 100
 
@@ -14,3 +16,5 @@ NUMBER_OF_MALE_ANIMALS = 5
 NUMBER_OF_FEMALE_ANIMALS = 5
 
 PLANT_GROWTH_PER_ROUND = 5
+NEIGHBOUR_TILES = [Point(0, 1), Point(1, 1), Point(1, 0), Point(1, -1), Point(0, -1), Point(-1, -1), Point(-1, 0),
+                   Point(-1, 1)]

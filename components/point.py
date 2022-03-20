@@ -1,6 +1,9 @@
 import math
 import random
 
+from components.animal import Animal
+from config import NEIGHBOUR_TILES
+
 
 class Point:
     def __init__(self, x: int, y: int):
@@ -22,16 +25,13 @@ class Point:
     def __str__(self):
         return "(" + str(self.x) + "," + str(self.y) + ")"
 
-    def get_child_position(self):
-        child_x = 0
-        child_y = 0
-        diff = [-1, 0, 1]
-
-        while not (abs(child_x) or abs(child_y)):
-            child_x = random.choice(diff)
-            child_y = random.choice(diff)
-
-        return self + Point(child_x, child_y)
+    def get_child_position(self, tiles: []):
+        possible_places = NEIGHBOUR_TILES.copy()
+        place = random.choice(possible_places)
+        while type(tiles.get(self + place)) is Animal and possible_places:
+            possible_places.remove(place)
+            place = random.choice(possible_places)
+        return self + place if possible_places else self
 
     @staticmethod
     def get_random_point(point_lower_left, point_upper_right):
