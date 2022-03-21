@@ -1,4 +1,3 @@
-from components.animal import Animal
 from utils import math_utils
 from config import COLOR, TAIL
 
@@ -7,12 +6,6 @@ class Attributes:
     def __init__(self, color: float, tail: float):
         self.color = color
         self.tail = tail
-
-    @staticmethod
-    def get_child_attributes(male: Animal, female: Animal):
-        color = 0.5*male.attributes.color + 0.5*female.attributes.color
-        tail = 0.5*male.attributes.tail + 0.5*female.attributes.tail
-        return Attributes(color, tail)
 
     @staticmethod
     def get_random_attributes():
