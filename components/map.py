@@ -56,6 +56,7 @@ class Map:
 
         plant = Plant(position=position, energy=energy)
         self.plants.append(plant)
+        self.tiles[position] = plant
 
     def check_nearest_tiles_for_food(self, position: Point):
         max_energy = 0
@@ -82,7 +83,7 @@ class Map:
             animal.energy += plant.energy
             animal.position = new_position
             self.plants.remove(plant)
-            self.tiles[new_position] = animal
+            self.move_animal(animal, new_position)
 
     def kill_animal(self, animal: Animal):
         self.animals.remove(animal)
@@ -109,6 +110,7 @@ class Map:
         random_num = random()
         if random_num <= male.probability_of_breeding():
             child = female.create_child(male, self.tiles)
+            # if there is no free position around female, we don't create a child
             if child.position is not female.position:
                 self.tiles[child.position] = child
                 self.animals.append(child)
@@ -151,6 +153,7 @@ class Map:
 
     def move_animal(self, animal, new_position):
         if new_position is not None and self.is_position_in_bounds(new_position):
+            del self.tiles[animal.position]
             animal.position = new_position
             self.tiles[new_position] = animal
 
@@ -193,3 +196,4 @@ class Map:
             new_position = position + point
             if type(self.tiles.get(new_position)) is not Animal and self.is_position_in_bounds(new_position):
                 return new_position
+        return position
