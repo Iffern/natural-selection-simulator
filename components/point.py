@@ -22,19 +22,27 @@ class Point:
     def __str__(self):
         return "(" + str(self.x) + "," + str(self.y) + ")"
 
-    def get_child_position(self):
-        child_x = 0
-        child_y = 0
-        diff = [-1, 0, 1]
+    def __hash__(self):
+        return 17*hash(self.x) + 19*hash(self.y)
 
-        while not (abs(child_x) or abs(child_y)):
-            child_x = random.choice(diff)
-            child_y = random.choice(diff)
+    def __le__(self, other):
+        return self.x <= other.x and self.y <= other.y
 
-        return self + Point(child_x, child_y)
+    def __lt__(self, other):
+        return self.x < other.x and self.y < other.y
+
+    def __gt__(self, other):
+        return self.x > other.x and self.y > other.y
+
+    def __ge__(self, other):
+        return self.x >= other.x and self.y >= other.y
 
     @staticmethod
     def get_random_point(point_lower_left, point_upper_right):
         x = random.randint(point_lower_left.x, point_upper_right.x)
         y = random.randint(point_lower_left.y, point_upper_right.y)
         return Point(x, y)
+
+
+NEIGHBOUR_TILES = [Point(0, 1), Point(1, 1), Point(1, 0), Point(1, -1), Point(0, -1), Point(-1, -1), Point(-1, 0),
+                   Point(-1, 1)]
