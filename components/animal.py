@@ -4,9 +4,15 @@ from components.attributes import Attributes
 from components.gender import Gender
 from components.point import Point, NEIGHBOUR_TILES
 from config import ENERGY_DEMAND_PER_ROUND, BREED_ENERGY_FEMALE, BREED_ENERGY_MALE
+from utils.crossover import Crossover
 
 
 class Animal:
+    gender: Gender
+    position: Point
+    attributes: Attributes
+    age: int
+    energy: float
 
     def __init__(self, gender: Gender, position: Point, attributes: Attributes, age: int, energy: float):
         self.gender = gender
@@ -37,15 +43,9 @@ class Animal:
     def probability_of_breeding(self):
         return self.attributes.probability_of_breeding()
 
-    def create_child(self, partner, tiles: []):
+    def create_child(self, partner, tiles: [], crossover: Crossover):
         return Animal(gender=Gender.random(), position=Animal.get_child_position(self.position, tiles),
-                      attributes=Animal.get_child_attributes(self, partner), age=0, energy=4 * ENERGY_DEMAND_PER_ROUND)
-
-    @staticmethod
-    def get_child_attributes(male, female):
-        color = 0.8 * male.attributes.color + 0.2 * female.attributes.color
-        tail = 0.8 * male.attributes.tail + 0.2 * female.attributes.tail
-        return Attributes(color, tail)
+                      attributes=crossover.get_crossover(self.attributes, partner.attributes), age=0, energy=4 * ENERGY_DEMAND_PER_ROUND)
 
     @staticmethod
     def get_child_position(point: Point, tiles: []):
