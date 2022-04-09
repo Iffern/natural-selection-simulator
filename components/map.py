@@ -6,6 +6,7 @@ from components.animal import Animal
 from components.attributes import Attributes
 from components.plant import Plant
 from components.point import Point, NEIGHBOUR_TILES
+from utils.crossover import Crossover, BlendCrossoverAB
 
 
 def filter_capable_to_breed(partners: []):
@@ -21,6 +22,15 @@ def get_most_attractive_animal(partners: []):
 
 
 class Map:
+    width: int
+    height: int
+    lower_left: Point
+    upper_right: Point
+    animals: list
+    plants: list
+    tiles: dict
+    crossover: Crossover
+
     def __init__(self):
         self.width = MAP_WIDTH
         self.height = MAP_HEIGHT
@@ -29,6 +39,7 @@ class Map:
         self.animals = []
         self.plants = []
         self.tiles = {}
+        self.crossover = BlendCrossoverAB()     # TODO: add to config
 
     def is_position_in_bounds(self, position: Point):
         return self.lower_left <= position <= self.upper_right
@@ -109,7 +120,7 @@ class Map:
         male = first_animal if first_animal.gender is Gender.M else sec_animal
         random_num = random()
         if random_num <= male.probability_of_breeding():
-            child = female.create_child(male, self.tiles)
+            child = female.create_child(male, self.tiles, self.crossover)
             # if there is no free position around female, we don't create a child
             if child.position is not female.position:
                 self.tiles[child.position] = child

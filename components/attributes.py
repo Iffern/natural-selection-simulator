@@ -3,9 +3,15 @@ from config import COLOR, TAIL
 
 
 class Attributes:
+    color: float
+    tail: float
+
     def __init__(self, color: float, tail: float):
         self.color = color
         self.tail = tail
+
+    def __str__(self):
+        return "(" + str(self.color) + "," + str(self.tail) + ")"
 
     @staticmethod
     def get_random_attributes():
