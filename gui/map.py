@@ -1,6 +1,5 @@
 import pygame
-
-from components import config
+import config
 
 
 class Map:
