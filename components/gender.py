@@ -9,3 +9,7 @@ class Gender(Enum):
     @staticmethod
     def random():
         return random.choice(list(Gender))
+
+
+def opposite(gender: Gender):
+    return Gender.M if gender == Gender.F else Gender.F
