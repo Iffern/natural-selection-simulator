@@ -43,15 +43,19 @@ class Animal:
     def probability_of_breeding(self):
         return self.attributes.probability_of_breeding()
 
-    def create_child(self, partner, tiles: [], crossover: Crossover):
+    def create_child(self, partner, tiles: {}, crossover: Crossover):
         return Animal(gender=Gender.random(), position=Animal.get_child_position(self.position, tiles),
-                      attributes=crossover.get_crossover(self.attributes, partner.attributes), age=0, energy=4 * ENERGY_DEMAND_PER_ROUND)
+                      attributes=crossover.get_crossover(self.attributes, partner.attributes), age=0,
+                      energy=4 * ENERGY_DEMAND_PER_ROUND)
 
     @staticmethod
-    def get_child_position(point: Point, tiles: []):
+    def get_child_position(point: Point, tiles: {}):
         possible_places = NEIGHBOUR_TILES.copy()
         place = random.choice(possible_places)
-        while type(tiles.get(point + place)) is Animal and possible_places:
+        while isinstance(tiles.get(point + place), Animal) and possible_places:
             possible_places.remove(place)
-            place = random.choice(possible_places)
-        return point + place if possible_places else point
+            if possible_places:
+                place = random.choice(possible_places)
+            else:
+                return point
+        return point + place
