@@ -31,9 +31,9 @@ class Map:
     tiles: dict
     crossover: Crossover
 
-    def __init__(self):
-        self.width = MAP_WIDTH
-        self.height = MAP_HEIGHT
+    def __init__(self, width: int = None, height: int = None):
+        self.width = width or MAP_WIDTH
+        self.height = height or MAP_HEIGHT
         self.lower_left = Point(0, 0)
         self.upper_right = Point(self.width, self.height)
         self.animals = []
@@ -74,7 +74,7 @@ class Map:
         new_position = position
         for point in NEIGHBOUR_TILES:
             tile = self.tiles.get(position + point)
-            if isinstance(tile, Plant):
+            if isinstance(tile, Plant) and tile.energy > max_energy:
                 max_energy = max(tile.energy, max_energy)
                 new_position = position + point
         return new_position
@@ -92,7 +92,6 @@ class Map:
         plant = self.tiles.get(new_position)
         if isinstance(plant, Plant):
             animal.energy += plant.energy
-            animal.position = new_position
             self.plants.remove(plant)
             self.move_animal(animal, new_position)
 
@@ -162,13 +161,13 @@ class Map:
                 max_females = females_around_position
         return result_position
 
-    def move_animal(self, animal, new_position):
-        if new_position is not None and self.is_position_in_bounds(new_position):
+    def move_animal(self, animal: Animal, new_position: Point or None):
+        if new_position and self.is_position_in_bounds(new_position):
             del self.tiles[animal.position]
             animal.position = new_position
             self.tiles[new_position] = animal
 
-    def find_food(self, animal):
+    def find_food(self, animal: Animal):
         new_position, energy = self.find_tile_with_largest_amount_of_food(animal.position)
         if new_position:
             animal.energy += energy
@@ -188,13 +187,13 @@ class Map:
                 new_position = plant_position
         return new_position, max_energy
 
-    def find_food_further(self, position):
+    def find_food_further(self, position: Point):
         result_position = position
         max_energy = 0
         for point in NEIGHBOUR_TILES:
             new_position = position + point
             if not isinstance(self.tiles.get(new_position), Animal):
-                new_position, energy = self.find_tile_with_largest_amount_of_food(new_position)
+                position_with_food, energy = self.find_tile_with_largest_amount_of_food(new_position)
                 if energy > max_energy:
                     max_energy = energy
                     result_position = new_position
