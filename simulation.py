@@ -27,6 +27,14 @@ def get_average_tail(animals: []):
     return mean(tail_values)
 
 
+def get_number_of_animals(animals: [], gender: Gender):
+    return len(list(filter(lambda ani: ani.gender is gender, animals)))
+
+
+open('results.txt', 'w').close()
+
+epoch = 0
+
 while True:
     for i in range(PLANT_GROWTH_PER_ROUND):
         world_map.create_random_plant()
@@ -48,7 +56,9 @@ while True:
                         world_map.find_food(animal)
             else:
                 world_map.find_food(animal)
-    print(*list(map(lambda ani: ani.position, world_map.animals)))
-    print("Average color: " + str(get_average_color(world_map.animals)))
-    print("Average tail: " + str(get_average_tail(world_map.animals)))
+    with open("results.txt", "a") as results:
+        results.write(str(get_average_color(world_map.animals)) + ";" + str(get_average_tail(world_map.animals)) + ";"
+                      + str(get_number_of_animals(world_map.animals, Gender.F)) + ";"
+                      + str(get_number_of_animals(world_map.animals, Gender.M)) + ";" + str(epoch) + "\n")
+    epoch += 1
     time.sleep(2)
