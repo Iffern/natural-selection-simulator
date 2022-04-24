@@ -35,7 +35,7 @@ side_bar = SideBar(gui_config.WIDTH - gui_config.BAR_WIDTH, 50)
 
 screen.fill((255, 255, 255))
 
-# TODO: move to some menu component
+# TODO: move to some menu component and get parameters from sliders
 side_bar.add_slider(screen, 0, "Number of males", 1, 20, 4)
 side_bar.add_slider(screen, 70, "Number of females", 1, 20, 4)
 side_bar.add_slider(screen, 140, "Plant growth per round", 1, 100, 10)
@@ -45,7 +45,7 @@ side_bar.add_slider(screen, 350, "Breeding energy demand - female", 1, 90, 15)
 side_bar.add_slider(screen, 420, "Breeding energy demand - male", 1, 90, 15)
 side_bar.add_slider(screen, 490, "Maximum animal age - in rounds", 1, 300, 100)
 
-world_map = Map(screen)
+world_map = Map(screen=screen)
 
 for i in range(NUMBER_OF_MALE_ANIMALS):
     world_map.create_random_animal(Gender.M)

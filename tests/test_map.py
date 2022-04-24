@@ -51,11 +51,11 @@ class MapTest(unittest.TestCase):
     def test_is_position_in_bounds(self):
         world = Map()
         self.assertTrue(world.is_position_in_bounds(Point(0, 0)))
-        self.assertTrue(world.is_position_in_bounds(Point(MAP_WIDTH, MAP_HEIGHT)))
+        self.assertTrue(world.is_position_in_bounds(Point(MAP_WIDTH - 1, MAP_HEIGHT - 1)))
         self.assertFalse(world.is_position_in_bounds(Point(-1, 0)))
-        self.assertFalse(world.is_position_in_bounds(Point(MAP_WIDTH, MAP_HEIGHT + 1)))
-        self.assertFalse(world.is_position_in_bounds(Point(MAP_WIDTH + 1, 0)))
-        self.assertFalse(world.is_position_in_bounds(Point(0, MAP_HEIGHT + 1)))
+        self.assertFalse(world.is_position_in_bounds(Point(MAP_WIDTH - 1, MAP_HEIGHT)))
+        self.assertFalse(world.is_position_in_bounds(Point(MAP_WIDTH, 0)))
+        self.assertFalse(world.is_position_in_bounds(Point(0, MAP_HEIGHT)))
 
     def test_create_random_animal(self):
         world = Map()
@@ -70,12 +70,12 @@ class MapTest(unittest.TestCase):
         self.assertEqual(animal.energy, ENERGY['max'])
 
     def test_create_random_plant(self):
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         world.create_random_plant()
         self.assertEqual(len(world.plants), 1)
         self.assertEqual(len(world.tiles), 1)
 
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         world.tiles = {Point(0, 0): (_get_animal_on_position(Point(0, 0))),
                        Point(1, 0): (_get_animal_on_position(Point(1, 0))),
                        Point(0, 1): (_get_animal_on_position(Point(0, 1)))}
@@ -84,7 +84,7 @@ class MapTest(unittest.TestCase):
         self.assertEqual(len(world.tiles), 4)
         self.assertTrue(isinstance(world.tiles[Point(1, 1)], Plant))
 
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         world.tiles = {Point(0, 0): (_get_animal_on_position(Point(0, 0))),
                        Point(1, 0): (_get_animal_on_position(Point(1, 0))),
                        Point(0, 1): (_get_animal_on_position(Point(0, 1))),
@@ -96,25 +96,25 @@ class MapTest(unittest.TestCase):
         self.assertEqual(world.tiles[Point(1, 1)].energy, 10 + PLANT_ENERGY)
 
     def test_check_nearest_tiles_for_food(self):
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         world.tiles = {Point(0, 0): Plant(Point(0, 0), 3),
                        Point(0, 1): (_get_animal_on_position(Point(0, 1))),
                        Point(1, 1): Plant(Point(1, 1), 10)}
         new_position = world.check_nearest_tiles_for_food(Point(1, 0))
         self.assertEqual(new_position, Point(1, 1))
 
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         world.tiles = {Point(0, 0): (_get_animal_on_position(Point(0, 0))),
                        Point(0, 1): (_get_animal_on_position(Point(0, 1)))}
         new_position = world.check_nearest_tiles_for_food(Point(1, 0))
         self.assertEqual(new_position, Point(1, 0))
 
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         new_position = world.check_nearest_tiles_for_food(Point(1, 0))
         self.assertEqual(new_position, Point(1, 0))
 
     def test_find_food_or_die(self):
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         animal = _get_animal_on_position_with_energy(Point(1, 0), 0)
         plant1 = Plant(Point(0, 0), ENERGY_DEMAND_PER_ROUND)
         plant2 = Plant(Point(1, 1), ENERGY_DEMAND_PER_ROUND + 2)
@@ -130,7 +130,7 @@ class MapTest(unittest.TestCase):
         self.assertEqual(animal.position, Point(1, 1))
         self.assertEqual(world.tiles.get(Point(1, 0)), None)
 
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         animal = _get_animal_on_position_with_energy(Point(1, 0), 0)
         plant = Plant(Point(0, 0), ENERGY_DEMAND_PER_ROUND)
         world.tiles = {Point(0, 0): plant,
@@ -143,7 +143,7 @@ class MapTest(unittest.TestCase):
         self.assertEqual(animal.position, Point(0, 0))
         self.assertEqual(world.tiles.get(Point(1, 0)), None)
 
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         animal = _get_animal_on_position_with_energy(Point(1, 0), 0)
         plant = Plant(Point(0, 0), ENERGY_DEMAND_PER_ROUND - 1)
         world.tiles = {Point(0, 0): plant,
@@ -156,7 +156,7 @@ class MapTest(unittest.TestCase):
         self.assertEqual(world.tiles.get(Point(0, 0)), None)
         self.assertEqual(world.tiles.get(Point(1, 0)), None)
 
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         animal = _get_animal_on_position_with_energy(Point(1, 0), ENERGY_DEMAND_PER_ROUND - 1)
         world.tiles = {Point(1, 0): animal}
         world.animals = [animal]
@@ -166,7 +166,7 @@ class MapTest(unittest.TestCase):
         self.assertEqual(world.tiles.get(Point(1, 0)), None)
 
     def test_kill_animal(self):
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         animal1 = _get_animal_on_position(Point(1, 0))
         animal2 = _get_animal_on_position(Point(0, 0))
         animal3 = _get_animal_on_position(Point(0, 1))
@@ -179,7 +179,7 @@ class MapTest(unittest.TestCase):
         self.assertEqual(world.tiles.get(Point(1, 0)), None)
 
     def test_find_potential_partner(self):
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         animal1 = _get_animal_on_position_with_gender(Point(1, 0), Gender.F)
         animal2 = _get_animal_on_position_with_gender(Point(0, 0), Gender.M)
         animal3 = _get_animal_on_position_with_gender(Point(0, 1), Gender.F)
@@ -193,7 +193,7 @@ class MapTest(unittest.TestCase):
         partners = world.find_potential_partners(Point(0, 0), Gender.M)
         self.assertCountEqual(partners, [animal1, animal3])
 
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         animal2 = _get_animal_on_position_with_gender(Point(0, 0), Gender.M)
         animal4 = _get_animal_on_position_with_gender(Point(1, 1), Gender.M)
         world.tiles = {Point(0, 0): animal2,
@@ -204,7 +204,7 @@ class MapTest(unittest.TestCase):
         self.assertEqual(partners, [])
 
     def test_find_other_animal_to_breed(self):
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         animal1 = Animal(Gender.F, Point(1, 0), Attributes(0.5, 0.5), 1, 2*BREED_ENERGY_FEMALE)
         animal2 = Animal(Gender.M, Point(0, 0), Attributes(0.7, 0.7), 1, BREED_ENERGY_MALE - 1)
         animal3 = Animal(Gender.M, Point(0, 1), Attributes(0.9, 0.9), 1, 2*BREED_ENERGY_MALE)
@@ -217,7 +217,7 @@ class MapTest(unittest.TestCase):
         self.assertEqual(len(partners), 1)
         self.assertEqual(partners[0], animal3)
 
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         animal1 = Animal(Gender.M, Point(1, 0), Attributes(0.5, 0.5), 1, 2 * BREED_ENERGY_MALE)
         animal2 = Animal(Gender.F, Point(0, 0), Attributes(0.7, 0.7), 1, BREED_ENERGY_FEMALE - 1)
         animal3 = Animal(Gender.F, Point(0, 1), Attributes(0.9, 0.9), 1, 2 * BREED_ENERGY_FEMALE)
@@ -231,7 +231,7 @@ class MapTest(unittest.TestCase):
         self.assertCountEqual(partners, [animal3, animal4])
 
     def test_find_partners_further(self):
-        world = Map(1, 2)
+        world = Map(width=2, height=3)
         animal1 = Animal(Gender.F, Point(0, 0), Attributes(0.5, 0.5), 1, 2 * BREED_ENERGY_FEMALE)
         animal2 = Animal(Gender.M, Point(0, 2), Attributes(0.7, 0.7), 1, 2 * BREED_ENERGY_MALE)
         animal3 = Animal(Gender.M, Point(1, 2), Attributes(0.9, 0.9), 1, 2 * BREED_ENERGY_MALE)
@@ -241,7 +241,7 @@ class MapTest(unittest.TestCase):
         new_position = world.find_partners_further(animal1)
         self.assertEqual(new_position, Point(0, 1))
 
-        world = Map(3, 3)
+        world = Map(width=4, height=4)
         animal1 = Animal(Gender.F, Point(0, 2), Attributes(0.5, 0.5), 1, 2 * BREED_ENERGY_FEMALE)
         animal2 = Animal(Gender.M, Point(3, 2), Attributes(0.7, 0.7), 1, 2 * BREED_ENERGY_MALE)
         animal3 = Animal(Gender.M, Point(0, 0), Attributes(0.9, 0.9), 1, 2 * BREED_ENERGY_MALE)
@@ -251,7 +251,7 @@ class MapTest(unittest.TestCase):
         new_position = world.find_partners_further(animal1)
         self.assertEqual(new_position, Point(1, 1))
 
-        world = Map(3, 3)
+        world = Map(width=4, height=4)
         animal1 = Animal(Gender.M, Point(0, 2), Attributes(0.5, 0.5), 1, 2 * BREED_ENERGY_MALE)
         animal2 = Animal(Gender.F, Point(0, 0), Attributes(0.1, 0.1), 1, 2 * BREED_ENERGY_FEMALE)
         animal3 = Animal(Gender.F, Point(0, 1), Attributes(0.2, 0.2), 1, 2 * BREED_ENERGY_FEMALE)
@@ -268,7 +268,7 @@ class MapTest(unittest.TestCase):
         self.assertEqual(new_position, Point(1, 1))
 
     def test_get_position_next_to_most_attractive_partner(self):
-        world = Map(2, 2)
+        world = Map(width=3, height=3)
         animal1 = Animal(Gender.M, Point(0, 0), Attributes(0.5, 0.5), 1, 2 * BREED_ENERGY_MALE)
         animal2 = Animal(Gender.M, Point(0, 1), Attributes(0.1, 0.1), 1, 2 * BREED_ENERGY_MALE)
         animal3 = Animal(Gender.M, Point(1, 0), Attributes(0.9, 0.9), 1, 2 * BREED_ENERGY_MALE)
@@ -280,14 +280,14 @@ class MapTest(unittest.TestCase):
         position = world.get_position_next_to_most_attractive_partner(position_partners_map)
         self.assertEqual(position, Point(1, 1))
 
-        world = Map(2, 2)
+        world = Map(width=3, height=3)
         animal1 = Animal(Gender.M, Point(0, 0), Attributes(0.5, 0.5), 1, 2 * BREED_ENERGY_MALE)
         position_partners_map = {Point(-1, 0): [animal1]}
         position = world.get_position_next_to_most_attractive_partner(position_partners_map)
         self.assertEqual(position, None)
 
     def test_get_position_with_largest_number_of_females(self):
-        world = Map(2, 2)
+        world = Map(width=3, height=3)
         animal1 = Animal(Gender.F, Point(0, 0), Attributes(0.5, 0.5), 1, 2 * BREED_ENERGY_FEMALE)
         animal2 = Animal(Gender.F, Point(0, 1), Attributes(0.1, 0.1), 1, 2 * BREED_ENERGY_FEMALE)
         animal3 = Animal(Gender.F, Point(0, 2), Attributes(0.9, 0.9), 1, 2 * BREED_ENERGY_FEMALE)
@@ -297,14 +297,14 @@ class MapTest(unittest.TestCase):
         position = world.get_position_next_to_most_attractive_partner(position_partners_map)
         self.assertEqual(position, Point(2, 1))
 
-        world = Map(2, 2)
+        world = Map(width=3, height=3)
         animal1 = Animal(Gender.F, Point(0, 0), Attributes(0.5, 0.5), 1, 2 * BREED_ENERGY_FEMALE)
         position_partners_map = {Point(-1, 0): [animal1]}
         position = world.get_position_next_to_most_attractive_partner(position_partners_map)
         self.assertEqual(position, None)
 
     def test_move_animal(self):
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         animal = Animal(Gender.F, Point(0, 0), Attributes(0.5, 0.5), 1, 2 * BREED_ENERGY_FEMALE)
         world.tiles = {Point(0, 0): animal}
         world.move_animal(animal, Point(-1, -1))
@@ -316,7 +316,7 @@ class MapTest(unittest.TestCase):
         self.assertEqual(world.tiles.get(Point(1, 1)), animal)
 
     def test_find_tile_with_largest_amount_of_food(self):
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         plant1 = Plant(Point(1, 0), 15)
         plant2 = Plant(Point(0, 1), 10)
         plant3 = Plant(Point(1, 1), 5)
@@ -327,14 +327,14 @@ class MapTest(unittest.TestCase):
         self.assertEqual(position, Point(1, 0))
         self.assertEqual(max_energy, 15)
 
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         world.tiles = {}
         position, max_energy = world.find_tile_with_largest_amount_of_food(Point(0, 0))
         self.assertEqual(position, None)
         self.assertEqual(max_energy, 0)
 
     def test_find_food_further(self):
-        world = Map(3, 3)
+        world = Map(width=4, height=4)
         plant1 = Plant(Point(2, 0), 5)
         plant2 = Plant(Point(3, 1), 10)
         plant3 = Plant(Point(2, 3), 15)
@@ -344,24 +344,24 @@ class MapTest(unittest.TestCase):
         position = world.find_food_further(Point(1, 1))
         self.assertEqual(position, Point(1, 2))
 
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         world.tiles = {}
         position = world.find_food_further(Point(0, 0))
         self.assertEqual(position, Point(0, 1))
 
     def test_get_free_neighbour_position(self):
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         world.tiles = {}
         position = world.get_free_neighbour_position(Point(0, 0))
         self.assertEqual(position, Point(0, 1))
 
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         world.tiles = {Point(0, 1): _get_animal_on_position(Point(0, 1)),
                        Point(1, 1): _get_animal_on_position(Point(1, 1))}
         position = world.get_free_neighbour_position(Point(0, 0))
         self.assertEqual(position, Point(1, 0))
 
-        world = Map(1, 1)
+        world = Map(width=2, height=2)
         world.tiles = {Point(0, 1): _get_animal_on_position(Point(0, 1)),
                        Point(1, 1): _get_animal_on_position(Point(1, 1)),
                        Point(1, 0): _get_animal_on_position(Point(1, 0))}
