@@ -44,9 +44,10 @@ class Animal:
     def probability_of_breeding(self):
         return self.attributes.probability_of_breeding()
 
-    def create_child(self, partner, tiles: [], crossover: Crossover, is_in_bounds):
+    def create_child(self, partner, tiles: {}, crossover: Crossover, is_in_bounds):
         return Animal(gender=Gender.random(), position=Animal.get_child_position(self.position, tiles, is_in_bounds),
-                      attributes=crossover.get_crossover(self.attributes, partner.attributes), age=0, energy=4 * ENERGY_DEMAND_PER_ROUND)
+                      attributes=crossover.get_crossover(self.attributes, partner.attributes), age=0,
+                      energy=4 * ENERGY_DEMAND_PER_ROUND)
 
     def get_image(self):
         return 'gui/resources/peacock_female.png' if self.gender == Gender.F else 'gui/resources/peacock_male.png'
@@ -59,10 +60,13 @@ class Animal:
         screen.blit(scaled_image, display_position)
 
     @staticmethod
-    def get_child_position(point: Point, tiles: [], is_in_bounds):
+    def get_child_position(point: Point, tiles: {}, is_in_bounds):
         possible_places = NEIGHBOUR_TILES.copy()
         place = random.choice(possible_places)
-        while (type(tiles.get(point + place)) is Animal or not is_in_bounds(point + place)) and possible_places:
+        while (isinstance(tiles.get(point + place), Animal) or not is_in_bounds(point + place)) and possible_places:
             possible_places.remove(place)
-            place = random.choice(possible_places)
-        return point + place if possible_places else point
+            if possible_places:
+                place = random.choice(possible_places)
+            else:
+                return point
+        return point + place

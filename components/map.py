@@ -33,9 +33,9 @@ class Map:
     crossover: Crossover
     scale: Point
 
-    def __init__(self, screen):
-        self.width = MAP_WIDTH
-        self.height = MAP_HEIGHT
+    def __init__(self, width: int = None, height: int = None, screen=None):
+        self.width = width or MAP_WIDTH
+        self.height = height or MAP_HEIGHT
         self.lower_left = Point(0, 0)
         self.upper_right = Point(self.width - 1, self.height - 1)
         self.animals = []
@@ -63,10 +63,10 @@ class Map:
         energy = PLANT_ENERGY
         tile = self.tiles.get(position)
 
-        while type(tile) is Animal:
+        while isinstance(tile, Animal):
             position = Point.get_random_point(self.lower_left, self.upper_right)
             tile = self.tiles.get(position)
-        if type(tile) is Plant:
+        if isinstance(tile, Plant):
             energy += tile.energy
 
         plant = Plant(position=position, energy=energy)
@@ -78,7 +78,7 @@ class Map:
         new_position = position
         for point in NEIGHBOUR_TILES:
             tile = self.tiles.get(position + point)
-            if type(tile) is Plant:
+            if isinstance(tile, Plant) and tile.energy > max_energy:
                 max_energy = max(tile.energy, max_energy)
                 new_position = position + point
         return new_position
@@ -94,9 +94,8 @@ class Map:
 
     def animal_eats_plant(self, animal: Animal, new_position: Point):
         plant = self.tiles.get(new_position)
-        if type(plant) is Plant:
+        if isinstance(plant, Plant):
             animal.energy += plant.energy
-            animal.position = new_position
             self.plants.remove(plant)
             self.move_animal(animal, new_position)
 
@@ -108,7 +107,7 @@ class Map:
         partners = []
         for point in NEIGHBOUR_TILES:
             tile = self.tiles.get(position + point)
-            if type(tile) is Animal and tile.gender is opposite(gender):
+            if isinstance(tile, Animal) and tile.gender is opposite(gender):
                 partners.append(tile)
         return partners
 
@@ -135,7 +134,7 @@ class Map:
         position_partners_map = {}
         for point in NEIGHBOUR_TILES:
             new_position = position + point
-            if type(self.tiles.get(new_position)) is not Animal:
+            if not isinstance(self.tiles.get(new_position), Animal):
                 partners = self.find_potential_partners(new_position, animal.gender)
                 position_partners_map[new_position] = partners
         if animal.gender is Gender.F and position_partners_map:
@@ -166,13 +165,13 @@ class Map:
                 max_females = females_around_position
         return result_position
 
-    def move_animal(self, animal, new_position):
-        if new_position is not None and self.is_position_in_bounds(new_position):
+    def move_animal(self, animal: Animal, new_position: Point or None):
+        if new_position and self.is_position_in_bounds(new_position):
             del self.tiles[animal.position]
             animal.position = new_position
             self.tiles[new_position] = animal
 
-    def find_food(self, animal):
+    def find_food(self, animal: Animal):
         new_position, energy = self.find_tile_with_largest_amount_of_food(animal.position)
         if new_position:
             animal.energy += energy
@@ -187,18 +186,18 @@ class Map:
         for point in NEIGHBOUR_TILES:
             plant_position = position + point
             plant = self.tiles.get(plant_position)
-            if type(plant) is Plant and plant.energy > max_energy:
+            if isinstance(plant, Plant) and plant.energy > max_energy:
                 max_energy = plant.energy
                 new_position = plant_position
         return new_position, max_energy
 
-    def find_food_further(self, position):
+    def find_food_further(self, position: Point):
         result_position = position
         max_energy = 0
         for point in NEIGHBOUR_TILES:
             new_position = position + point
-            if type(self.tiles.get(new_position)) is not Animal:
-                new_position, energy = self.find_tile_with_largest_amount_of_food(new_position)
+            if not isinstance(self.tiles.get(new_position), Animal):
+                position_with_food, energy = self.find_tile_with_largest_amount_of_food(new_position)
                 if energy > max_energy:
                     max_energy = energy
                     result_position = new_position
@@ -209,7 +208,7 @@ class Map:
     def get_free_neighbour_position(self, position):
         for point in NEIGHBOUR_TILES:
             new_position = position + point
-            if type(self.tiles.get(new_position)) is not Animal and self.is_position_in_bounds(new_position):
+            if not isinstance(self.tiles.get(new_position), Animal) and self.is_position_in_bounds(new_position):
                 return new_position
         return position
 

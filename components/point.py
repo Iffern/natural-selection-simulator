@@ -17,7 +17,7 @@ class Point:
         return Point(self.x - point.x, self.y - point.y)
 
     def __eq__(self, point):
-        return self.x == self.y and point.x == point.y
+        return self.x == point.x and self.y == point.y
 
     def __ne__(self, point):
         return not self == point
