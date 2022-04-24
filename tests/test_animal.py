@@ -6,9 +6,16 @@ from components.gender import Gender
 from components.point import Point
 from config import BREED_ENERGY_FEMALE, BREED_ENERGY_MALE, ENERGY_DEMAND_PER_ROUND
 
+LOWER_LEFT = Point(-1, -1)
+UPPER_RIGHT = Point(1, 1)
+
 
 def _get_animal_on_position(position: Point):
     return Animal(Gender.F, position, Attributes(0.5, 0.5), 1, 0)
+
+
+def _is_in_bounds(position: Point):
+    return LOWER_LEFT <= position <= UPPER_RIGHT
 
 
 class AnimalTest(unittest.TestCase):
@@ -50,7 +57,7 @@ class AnimalTest(unittest.TestCase):
                  Point(0, -1): (_get_animal_on_position(Point(0, -1))),
                  Point(-1, -1): (_get_animal_on_position(Point(-1, -1))),
                  Point(-1, 0): (_get_animal_on_position(Point(-1, 0)))}
-        self.assertEqual(Animal.get_child_position(point, tiles), Point(-1, 1))
+        self.assertEqual(Animal.get_child_position(point, tiles, _is_in_bounds), Point(-1, 1))
 
         tiles = {Point(0, 1): (_get_animal_on_position(Point(0, 1))),
                  Point(1, 1): (_get_animal_on_position(Point(1, 1))),
@@ -60,7 +67,7 @@ class AnimalTest(unittest.TestCase):
                  Point(-1, -1): (_get_animal_on_position(Point(-1, -1))),
                  Point(-1, 0): (_get_animal_on_position(Point(-1, 0))),
                  Point(-1, 1): (_get_animal_on_position(Point(-1, 1)))}
-        self.assertEqual(Animal.get_child_position(point, tiles), Point(0, 0))
+        self.assertEqual(Animal.get_child_position(point, tiles, _is_in_bounds), Point(0, 0))
 
 
 if __name__ == '__main__':
