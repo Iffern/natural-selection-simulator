@@ -105,5 +105,3 @@ while True:
     # TODO: change to pygame clock
     time.sleep(2)
     pygame.display.flip()
-
-pygame.quit()
