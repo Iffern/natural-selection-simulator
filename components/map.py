@@ -2,6 +2,7 @@ from random import random
 
 from components.gender import Gender, opposite
 from config import ENERGY, MAP_HEIGHT, MAP_WIDTH, PLANT_ENERGY
+from gui.gui_config import WIDTH, HEIGHT, BAR_WIDTH
 from components.animal import Animal
 from components.attributes import Attributes
 from components.plant import Plant
@@ -30,16 +31,19 @@ class Map:
     plants: list
     tiles: dict
     crossover: Crossover
+    scale: Point
 
-    def __init__(self, width: int = None, height: int = None):
+    def __init__(self, width: int = None, height: int = None, screen=None):
         self.width = width or MAP_WIDTH
         self.height = height or MAP_HEIGHT
         self.lower_left = Point(0, 0)
-        self.upper_right = Point(self.width, self.height)
+        self.upper_right = Point(self.width - 1, self.height - 1)
         self.animals = []
         self.plants = []
         self.tiles = {}
         self.crossover = BlendCrossoverAB()     # TODO: add to config
+        self.screen = screen
+        self.scale = Point((WIDTH - BAR_WIDTH)/MAP_WIDTH, HEIGHT/MAP_HEIGHT)
 
     def is_position_in_bounds(self, position: Point):
         return self.lower_left <= position <= self.upper_right
@@ -119,7 +123,7 @@ class Map:
         male = first_animal if first_animal.gender is Gender.M else sec_animal
         random_num = random()
         if random_num <= male.probability_of_breeding():
-            child = female.create_child(male, self.tiles, self.crossover)
+            child = female.create_child(male, self.tiles, self.crossover, self.is_position_in_bounds)
             # if there is no free position around female, we don't create a child
             if child.position is not female.position:
                 self.tiles[child.position] = child
@@ -207,3 +211,10 @@ class Map:
             if not isinstance(self.tiles.get(new_position), Animal) and self.is_position_in_bounds(new_position):
                 return new_position
         return position
+
+    def display(self):
+        for a in self.animals:
+            a.display(self.screen, self.scale)
+
+        for p in self.plants:
+            p.display(self.screen, self.scale)
