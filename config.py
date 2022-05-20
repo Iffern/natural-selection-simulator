@@ -28,4 +28,4 @@ GAUSS_MU_TAIL = 0.5
 GAUSS_SIGMA_TAIL = 0.1
 
 
-CROSSOVER = {'blx': {'alpha': 0.125, 'beta': 0.125}, 'w_avg': {'alpha': 0.2, 'beta': 0.8}}
+CROSSOVER = {'blx': {'alpha': 5, 'beta': 1}, 'w_avg': {'alpha': 0.8, 'beta': 0.2}}
