@@ -55,7 +55,7 @@ preference_functions = {
 class Attributes:
     color: float
     tail: float
-    bias: Bias | None
+    bias: Bias = None
 
     def __init__(self, color: float, tail: float, bias: Bias = None):
         self.color = color
