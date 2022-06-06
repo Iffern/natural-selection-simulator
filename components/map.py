@@ -7,6 +7,7 @@ import config
 from components.gender import Gender, opposite
 from config import ENERGY, MAP_HEIGHT, MAP_WIDTH, PLANT_ENERGY
 from gui import gui_config
+from gui.button_type import ButtonType
 from gui.gui_config import WIDTH, HEIGHT, BAR_WIDTH
 from components.animal import Animal
 from components.attributes import Attributes
@@ -70,6 +71,21 @@ class Map:
 
         for i in range(female):
             self.create_random_animal(Gender.F)
+
+    def start_simulation(self):
+        return self.simulation_settings.get_button_value_by_type(ButtonType.START)
+
+    def check_reset_simulation(self):
+        if self.simulation_settings.get_button_value_by_type(ButtonType.RESET):
+            self.reset_population()
+            self.simulation_settings.side_bar.change_reset()
+
+    def reset_population(self):
+        self.animals = []
+        self.plants = []
+        self.tiles = {}
+        self.create_population(self.simulation_settings.get_slider_value_by_type(SliderType.FEMALE),
+                               self.simulation_settings.get_slider_value_by_type(SliderType.MALE))
 
     def is_position_in_bounds(self, position: Point):
         return self.lower_left <= position <= self.upper_right

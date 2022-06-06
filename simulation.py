@@ -47,18 +47,21 @@ while True:
 
     pygame.draw.rect(screen, (188, 235, 134), Rect(0, 0, gui_config.WIDTH - gui_config.BAR_WIDTH, gui_config.HEIGHT))
 
+    world_map.check_reset_simulation()
+
     tick = pygame.time.get_ticks()
     if tick > next_tick:
         next_tick += interval
 
-        world_map.create_plants_per_round()
-        world_map.animals_sim_step()
+        if world_map.start_simulation():
+            world_map.create_plants_per_round()
+            world_map.animals_sim_step()
 
-        with open("results.txt", "a") as results:
-            results.write(str(get_average_color(world_map.animals)) + ";" + str(get_average_tail(world_map.animals)) + ";"
-                          + str(get_number_of_animals(world_map.animals, Gender.F)) + ";"
-                          + str(get_number_of_animals(world_map.animals, Gender.M)) + ";" + str(epoch) + "\n")
-        epoch += 1
+            with open("results.txt", "a") as results:
+                results.write(str(get_average_color(world_map.animals)) + ";" + str(get_average_tail(world_map.animals)) + ";"
+                              + str(get_number_of_animals(world_map.animals, Gender.F)) + ";"
+                              + str(get_number_of_animals(world_map.animals, Gender.M)) + ";" + str(epoch) + "\n")
+            epoch += 1
 
     world_map.display(events)
     pygame.display.flip()
