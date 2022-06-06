@@ -1,0 +1,12 @@
+from enum import Enum
+
+
+class SliderType(Enum):
+    MALE = 'MALE'
+    FEMALE = 'FEMALE'
+    PL_PER_ROUND = 'PLANT_PER_ROUND'
+    PL_ENERGY = 'PLANT_ENERGY'
+    A_DAY_ENERGY = 'ANIMAL_DAY_ENERGY'
+    F_BREEDING = 'FEMALE_BREEDING'
+    M_BREEDING = 'MALE_BREEDING'
+    MAX_AGE = 'MAX_AGE'

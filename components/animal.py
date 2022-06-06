@@ -25,29 +25,30 @@ class Animal:
     def move(self, vector: Point):
         self.position += vector
 
-    def can_breed(self):
+    def can_breed(self, f_breed_energy=BREED_ENERGY_FEMALE, m_breed_energy=BREED_ENERGY_MALE):
         if self.gender == Gender.F:
-            return self.energy >= BREED_ENERGY_FEMALE
+            return self.energy >= f_breed_energy
         else:
-            return self.energy >= BREED_ENERGY_MALE
+            return self.energy >= m_breed_energy
 
-    def eat(self):
-        if self.energy - ENERGY_DEMAND_PER_ROUND >= 0:
-            self.energy -= ENERGY_DEMAND_PER_ROUND
+    def eat(self, energy_demand_per_round=ENERGY_DEMAND_PER_ROUND):
+        if self.energy - energy_demand_per_round >= 0:
+            self.energy -= energy_demand_per_round
             return True
         else:
             return False
 
-    def energy_for_breed(self):
-        return BREED_ENERGY_FEMALE if self.gender is Gender.F else BREED_ENERGY_MALE
+    def energy_for_breed(self, f_breed_energy=BREED_ENERGY_FEMALE, m_breed_energy=BREED_ENERGY_MALE):
+        return f_breed_energy if self.gender is Gender.F else m_breed_energy
 
     def probability_of_breeding(self):
         return self.attributes.probability_of_breeding()
 
-    def create_child(self, partner, tiles: {}, crossover: Crossover, is_in_bounds):
+    def create_child(self, partner, tiles: {}, crossover: Crossover, is_in_bounds,
+                     energy_demand_per_round=ENERGY_DEMAND_PER_ROUND):
         return Animal(gender=Gender.random(), position=Animal.get_child_position(self.position, tiles, is_in_bounds),
                       attributes=crossover.get_crossover(self.attributes, partner.attributes), age=0,
-                      energy=4 * ENERGY_DEMAND_PER_ROUND)
+                      energy=4 * energy_demand_per_round)
 
     def get_image(self):
         return 'gui/resources/peacock_female.png' if self.gender == Gender.F else 'gui/resources/peacock_male.png'
