@@ -1,5 +1,7 @@
 ## Natural selection simulator
 
+#### Requires Python 3.10 to run
+
 Related papers: 
 
 https://sci-hub.se/https://doi.org/10.1093/beheco/aru142
